@@ -88,7 +88,7 @@ von Niederschlag und Abflussmenge in einer Animation: Zwei Grafiken zeigen für 
             day_title.markdown(f"**{day :%d.%b %Y}**")
             df = df_precipitation[df_precipitation['datum']==day]
             chart = get_bar_chart(df, 'datum', 'sum', [0, 40], 'Niederschlag (mm/Tag)')
-            anim_prec.altair_chart(chart.properties(width=250, height=300, title="Niederschlag (mm)"))
+            anim_prec.altair_chart(chart.properties(width=250, height=300, title="Niederschlag, Messtation Binningen (mm)"))
             if len(df)>0:
                 value_prec.markdown(f"Niederschlag: {df.iloc[0]['sum'] :.1f} mm")
                 prec_sum += df.iloc[0]['sum']
@@ -96,7 +96,7 @@ von Niederschlag und Abflussmenge in einer Animation: Zwei Grafiken zeigen für 
             
             df = df_pegel[df_pegel['datum']==day]
             chart = get_bar_chart(df, 'datum', 'abflussmenge', [0,4000], 'Abflussmenge (m³/s')
-            anim_pegel.altair_chart(chart.properties(width=250, height=300, title="Abfluss (m³/s)"))
+            anim_pegel.altair_chart(chart.properties(width=250, height=300, title="Abflussmenge Rhein (m³/s)"))
             if len(df)>0:
                 value_pegel.markdown(f"Abflussmenge: {df.iloc[0]['abflussmenge'] :.1f} m³/s")
             i += 1
