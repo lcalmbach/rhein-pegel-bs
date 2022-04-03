@@ -136,12 +136,7 @@ def get_data(key: str):
     
     df = pd.read_parquet(data_dict[key]['pq_file'])
     if not data_is_up_to_date(df):
-        print("data is out-of-date")
-        st.write(df.head())
         df = synch_local_data(df)
-        st.write(df.head())
-    else:
-        print("data is up-to-date")
     return df
 
 
@@ -202,7 +197,7 @@ von Niederschlag und Abflussmenge in einer Animation: Zwei Grafiken zeigen für 
     
     run_button = st.empty()
     my_day_selector = st.empty() # date selection slider 
-    col1, col2 = st.beta_columns(2) #columns with plots and text
+    col1, col2 = st.columns(2) #columns with plots and text
     
     with col1:
         anim_prec = st.empty()

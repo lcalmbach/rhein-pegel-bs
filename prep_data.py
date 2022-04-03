@@ -10,7 +10,6 @@ df['Datum/Zeit']=pd.to_datetime(df['Datum/Zeit'])
 df['datum'] = pd.to_datetime(df['Datum/Zeit']).dt.date
 df = df.groupby(['datum'])['PREC [mm]'].agg(['sum']).reset_index()
 df.rename(columns = {'sum': 'prec_mm'}, inplace=True)
-print(df.head())
 df.to_parquet('./data/prec.pq')
 
 df = pd.read_csv("./data/100089.csv", sep=';')
@@ -20,5 +19,4 @@ df['Zeitstempel']=pd.to_datetime(df['Zeitstempel'], utc=True)
 df['datum'] = pd.to_datetime(df['Zeitstempel']).dt.date
 df = df.groupby(['datum'])['Abflussmenge'].agg(['mean']).reset_index()
 df.rename(columns = {'mean': 'abfluss'}, inplace=True)
-print(df.head())
 df.to_parquet('./data/pegel.pq')
