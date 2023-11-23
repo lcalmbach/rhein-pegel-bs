@@ -276,7 +276,7 @@ class RheinFlow():
         with col1:
             st.markdown('**Jahres-Statistik**')
             df_year = df_year.applymap(lambda x: round(x, 0))
-            df_year['year'] = df['year'].astype(str)
+            df_year['year'] = df_year['year'].astype(str)
             df_year.columns = ['Jahr', 'Mittel', 'Minimum', 'Maximum']
             st.dataframe(df_year)
             st.markdown('Jahres Tagesmittel der Abflussmenge [m³/s] sowie Tages-Minimum und -Maximum im Jahr seit 2020. Aktuelles Jahr mit Daten bis zum aktuellen Zeitpunkt.')
