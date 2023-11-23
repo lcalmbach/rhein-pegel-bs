@@ -270,13 +270,13 @@ class RheinFlow():
         df = self.flow_df
         df['year'] = df['date'].dt.year
         df['month'] = df['date'].dt.month
-        df_year = df.groupby('year')['abfluss'].agg(['mean', 'min', 'max'])
-        df_month = df.groupby('month')['abfluss'].agg(['mean', 'min', 'max'])
+        df_year = df.groupby('year')['abfluss'].agg(['mean', 'min', 'max']).reset_index()
+        df_month = df.groupby('month')['abfluss'].agg(['mean', 'min', 'max']).reset_index()
         
         with col1:
             st.markdown('**Jahres-Statistik**')
             df_year = df_year.applymap(lambda x: round(x, 0))
-            # df_year['year'] = df_year['year'].astype(str)
+            df_year['year'] = df_year['year'].astype(str)
             df_year.columns = ['Jahr', 'Mittel', 'Minimum', 'Maximum']
             st.dataframe(df_year)
             st.markdown('Jahres Tagesmittel der Abflussmenge [m³/s] sowie Tages-Minimum und -Maximum im Jahr seit 2020. Aktuelles Jahr mit Daten bis zum aktuellen Zeitpunkt.')
