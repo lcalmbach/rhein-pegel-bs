@@ -1,4 +1,5 @@
 import streamlit as st
+from st_aggrid import AgGrid
 import pandas as pd
 from datetime import datetime, timedelta, date
 import time
@@ -9,7 +10,7 @@ from texts import texts
 
 tz_GMT = pytz.timezone("Europe/London")
 seconds_per_day = 0.6
-
+month_names = {1: 'Jan', 2: 'Feb', 3: 'Mrz', 4: 'Apr', 5: 'Mai', 6: 'Jun', 7: 'Jul', 8: 'Aug', 9: 'Sep', 10: 'Okt', 11: 'Nov', 12: 'Dez'}
 data_dict = {
     "flow": {
         "url": "https://data.bs.ch/api/records/1.0/search/?dataset=100089&q=timestamp%3E%3D%22{}T00%3A00%3A00Z%22&rows=10000&sort=timestamp&facet=timestamp&fields=abfluss,timestamp",
@@ -267,6 +268,7 @@ class RheinFlow():
             
     def show_stats(self):
         col1, col2 = st.columns(2)
+        headers = ['Mittel', 'Minimum', 'Maximum']
         df = self.flow_df
         df['year'] = df['date'].dt.year
         df['month'] = df['date'].dt.month
@@ -274,12 +276,16 @@ class RheinFlow():
         df_month = df.groupby('month')['abfluss'].agg(['mean', 'min', 'max'])
         with col1:
             st.markdown('**Jahres-Statistik**')
-            st.write(df_year)
-            st.markdown('Maximale Tages-Abflussmenge [m³/s] sowie tägliches Minimum und Maximum seit 2020')
+            df['year'] = df['date'].astype(str)
+            df_year.columns = headers
+            AgGrid(df_year)
+            st.markdown('Jahres Tagesmittel der Abflussmenge [m³/s] sowie Tages-Minimum und -Maximum im Jahr seit 2020. Aktuelles Jahr mit Daten bis zum aktuellen Zeitpunkt.')
         with col2:
             st.markdown('**Monats-Statistik**')
-            st.write(df_month)
-            st.markdown('Maximale Tages-Abflussmenge [m³/s] sowie tägliches Minimum und Maximum pro Monat seit 2020')
+            df['month'] = df['month'].map(month_names)
+            df_month.columns = headers
+            AgGrid(df_month)
+            st.markdown('Monatliches Mitttel der Tages-Abflussmenge [m³/s] sowie tägliches Minimum und Maximum pro Monat seit 2020')
         mean = round(df['abfluss'].mean(), 1)
         min = round(df['abfluss'].min(), 1)
         max = round(df['abfluss'].max(), 1)
