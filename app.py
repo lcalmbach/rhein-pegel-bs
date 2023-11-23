@@ -1,10 +1,10 @@
 import streamlit as st
 from rhein_flow import RheinFlow
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 __author__ = "Lukas Calmbach"
 __author_email__ = "lcalmbach@gmail.com"
-VERSION_DATE = "2023-11-18"
+VERSION_DATE = "2023-11-23"
 my_name = "Rhein-Abfluss-BS"
 my_kuerzel = "rhein-abfluss-bs"
 GIT_REPO = "https://github.com/lcalmbach/rhein-pegel-bs"

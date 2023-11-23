@@ -278,12 +278,14 @@ class RheinFlow():
             st.markdown('**Jahres-Statistik**')
             df['year'] = df['date'].astype(str)
             df_year.columns = headers
+            df_year = df_year.applymap(lambda x: round(x, 0))
             AgGrid(df_year)
             st.markdown('Jahres Tagesmittel der Abflussmenge [m³/s] sowie Tages-Minimum und -Maximum im Jahr seit 2020. Aktuelles Jahr mit Daten bis zum aktuellen Zeitpunkt.')
         with col2:
             st.markdown('**Monats-Statistik**')
             df['month'] = df['month'].map(month_names)
             df_month.columns = headers
+            df_month = df_month.applymap(lambda x: round(x, 0))
             AgGrid(df_month)
             st.markdown('Monatliches Mitttel der Tages-Abflussmenge [m³/s] sowie tägliches Minimum und Maximum pro Monat seit 2020')
         mean = round(df['abfluss'].mean(), 1)
