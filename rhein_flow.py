@@ -280,9 +280,9 @@ class RheinFlow():
             df_year = df_year.applymap(lambda x: round(x, 0))
             column_defs = [
                 {'headerName': 'year', 'field': 'Jahr', 'width': 50},  # Adjust the width as needed
-                {'headerName': 'mean', 'field': 'Mittel', 'width': 100},  # Adjust the width as needed
-                {'headerName': 'min', 'field': 'Minimum', 'width': 100},  # Adjust the width as needed
-                {'headerName': 'max', 'field': 'Maximum', 'width': 100},  # Adjust the width as needed
+                {'headerName': 'mean', 'field': 'Mittel', 'width': 50},  # Adjust the width as needed
+                {'headerName': 'min', 'field': 'Minimum', 'width': 50},  # Adjust the width as needed
+                {'headerName': 'max', 'field': 'Maximum', 'width': 50},  # Adjust the width as needed
             ]
             AgGrid(df_year,
                    col_defs=column_defs
