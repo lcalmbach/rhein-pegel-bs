@@ -267,7 +267,6 @@ class RheinFlow():
             
     def show_stats(self):
         col1, col2 = st.columns(2)
-        headers = ['Mittel', 'Minimum', 'Maximum']
         df = self.flow_df
         df['year'] = df['date'].dt.year
         df['month'] = df['date'].dt.month
@@ -277,16 +276,17 @@ class RheinFlow():
         with col1:
             st.markdown('**Jahres-Statistik**')
             df_year = df_year.applymap(lambda x: round(x, 0))
-            df_year['year'] = df['date'].astype(str)
+            df_year['year'] = df['year'].astype(str)
             df_year.columns = ['Jahr', 'Mittel', 'Minimum', 'Maximum']
             st.dataframe(df_year)
             st.markdown('Jahres Tagesmittel der Abflussmenge [m³/s] sowie Tages-Minimum und -Maximum im Jahr seit 2020. Aktuelles Jahr mit Daten bis zum aktuellen Zeitpunkt.')
         with col2:
             st.markdown('**Monats-Statistik**')
-            df_month.columns = headers
+            df_year.columns = ['Monat', 'Mittel', 'Minimum', 'Maximum']
             df_month = df_month.applymap(lambda x: round(x, 0))
-            df_year.columns = ['Jahr', 'Mittel', 'Minimum', 'Maximum']
+            df_month = df_month.applymap(lambda x: round(x, 0))
             df_month['month'] = df_month['month'].map(month_names)
+            df_month.columns = ['Monat', 'Mittel', 'Minimum', 'Maximum']
             st.markdown('Monatliches Mitttel der Tages-Abflussmenge [m³/s] sowie tägliches Minimum und Maximum pro Monat seit 2020')
         mean = round(df['abfluss'].mean(), 1)
         min = round(df['abfluss'].min(), 1)
