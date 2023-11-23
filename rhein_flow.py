@@ -1,5 +1,4 @@
 import streamlit as st
-from st_aggrid import AgGrid
 import pandas as pd
 from datetime import datetime, timedelta, date
 import time
@@ -274,28 +273,20 @@ class RheinFlow():
         df['month'] = df['date'].dt.month
         df_year = df.groupby('year')['abfluss'].agg(['mean', 'min', 'max'])
         df_month = df.groupby('month')['abfluss'].agg(['mean', 'min', 'max'])
+        
         with col1:
             st.markdown('**Jahres-Statistik**')
             df_year = df_year.applymap(lambda x: round(x, 0))
-            
-            column_defs = [
-                {'headerName': 'Jahr', 'field': 'year', 'width': 20},  # Adjust the width as needed
-                {'headerName': 'Mittel', 'field': 'mean', 'width': 20},  # Adjust the width as needed
-                {'headerName': 'Minimum', 'field': 'min', 'width': 20},  # Adjust the width as needed
-                {'headerName': 'Maximum', 'field': 'max', 'width': 20},  # Adjust the width as needed
-            ]
-            df['year'] = df['date'].astype(str)
-            st.write(df_year)
-            AgGrid(df_year.reset_index(),
-                   col_defs=column_defs
-            )
+            df_year['year'] = df['date'].astype(str)
+            df_year.columns = ['Jahr', 'Mittel', 'Minimum', 'Maximum']
+            st.dataframe(df_year)
             st.markdown('Jahres Tagesmittel der Abflussmenge [m³/s] sowie Tages-Minimum und -Maximum im Jahr seit 2020. Aktuelles Jahr mit Daten bis zum aktuellen Zeitpunkt.')
         with col2:
             st.markdown('**Monats-Statistik**')
-            df['month'] = df['month'].map(month_names)
             df_month.columns = headers
             df_month = df_month.applymap(lambda x: round(x, 0))
-            AgGrid(df_month)
+            df_year.columns = ['Jahr', 'Mittel', 'Minimum', 'Maximum']
+            df_month['month'] = df_month['month'].map(month_names)
             st.markdown('Monatliches Mitttel der Tages-Abflussmenge [m³/s] sowie tägliches Minimum und Maximum pro Monat seit 2020')
         mean = round(df['abfluss'].mean(), 1)
         min = round(df['abfluss'].min(), 1)

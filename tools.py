@@ -4,12 +4,11 @@
 
 __author__ = "lcalmbach@gmail.com"
 
-import config as cn
+from st_aggrid import AgGrid, GridOptionsBuilder, ColumnsAutoSizeMode, DataReturnMode
 import streamlit as st
 import pandas as pd
 import numpy as np
 import base64
-from datetime import datetime
 
 
 def get_cs_item_list(lst, separator=",", quote_string=""):
@@ -20,75 +19,9 @@ def get_cs_item_list(lst, separator=",", quote_string=""):
     return result
 
 
-def color_gradient(
-    row: int, value_col: str, min_val: float, max_val: float, rgb: str
-) -> int:
-    """
-    Projects a value on a color gradient scale given the min and max value.
-    the color gradient type is defined in the config, e.g. blue-green, red, blue etc.
-    returns a string with rgb values
-    """
-
-    result = {"r": 0, "g": 0, "b": 0}
-    if max_val - min_val != 0:
-        x = int((row[value_col] - min_val) / (max_val - min_val) * 255)
-    else:
-        x = 0
-
-    if cn.GRADIENT == "blue-green":
-        if row[value_col] > max_val:
-            result["r"] = 255
-        else:
-            result["g"] = x
-            result["b"] = abs(255 - x)
-    return result[rgb]
 
 
-def get_pivot_data(df, group_by):
-    """
-    Returns a pivot table from the raw data table. df must include the station name, the data column and the
-    group by column. Example
-    input:
-    ¦Station¦date       ¦parameter  ¦value  ¦
-    -----------------------------------------
-    ¦MW1    ¦1/1/2001   ¦calcium    ¦10     ¦
-    ¦MW1    ¦1/1/2001   ¦chloride   ¦21     ¦
 
-    output:
-    ¦Station¦date       ¦calcium    ¦chloride   ¦
-    ---------------------------------------------
-    ¦MW1    ¦1/1/2001   ¦10         ¦21         ¦
-
-    :param df:          dataframe holding the data to be pivoted
-    :param group_by:
-    :return:
-    """
-
-    result = pd.pivot_table(
-        df,
-        values=cn.VALUES_VALUE_COLUMN,
-        index=[cn.SAMPLE_DATE_COLUMN, cn.STATION_NAME_COLUMN, group_by],
-        columns=[cn.PAR_NAME_COLUMN],
-        aggfunc=np.average,
-    )
-    return result
-
-
-def remove_nan_columns(df: pd.DataFrame):
-    """
-    Removes all empty columns from a data frame. This is used to reduce unnecessary columns when displaying tables.
-    Since there is only one station table but different data collection may have different data fields, often not all
-    fields are used in many cases. when displaying station or parameter information, empy columns can be excluded in
-    order to make the table easier to read.
-
-    :param df: dataframe from which empty dolumns should be removed
-    :return:
-    """
-
-    lis = df.loc[:, df.isna().all()]
-    for col in lis:
-        del df[col]
-    return df
 
 
 def remove_columns(df: pd.DataFrame, lis: list) -> pd.DataFrame:
@@ -249,3 +182,47 @@ def is_valid_timeagg(gl_time_agg, settings_agg) -> bool:
     if gl_time_agg in dic.keys():
         result = settings_agg in dic[gl_time_agg]
     return result
+
+def show_table(df: pd.DataFrame, update_mode, max_height: int, col_cfg: list = []):
+    row_height = 34
+    gb = GridOptionsBuilder.from_dataframe(df)
+    gb.configure_default_column(
+        groupable=False, value=True, enableRowGroup=False, editable=True
+    )
+    height = (
+        max_height
+        if (len(df) + 1) * row_height > max_height
+        else (len(df) + 1) * row_height + 60
+    )
+    if col_cfg != None:
+        for col in col_cfg:
+            gb.configure_column(col["name"], width=col["width"], hide=col["hide"])
+
+    gb.configure_selection(
+        "single",
+        use_checkbox=False,
+        rowMultiSelectWithClick=False,
+        suppressRowDeselection=False,
+    )
+    # issue 
+    gb.configure_grid_options(
+        domLayout="normal",
+        alwaysShowHorizontalScroll=True,
+        enableRangeSelection=True,
+        pagination=True,
+        paginationPageSize=10000,
+    )
+
+    gridOptions = gb.build()
+    grid_response = AgGrid(
+        df,
+        gridOptions=gridOptions,
+        height=height,
+        update_mode=update_mode,
+        sizeColumnsToFit=True,
+        allow_unsafe_jscode=True,  # Set it to True to allow jsfunction to be injected
+        enable_enterprise_modules=False,
+        columns_auto_size_mode=ColumnsAutoSizeMode.FIT_CONTENTS,
+    )
+    selected = grid_response["selected_rows"]
+    return selected
