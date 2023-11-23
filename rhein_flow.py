@@ -276,7 +276,6 @@ class RheinFlow():
         df_month = df.groupby('month')['abfluss'].agg(['mean', 'min', 'max'])
         with col1:
             st.markdown('**Jahres-Statistik**')
-            df['year'] = df['date'].astype(str)
             df_year = df_year.applymap(lambda x: round(x, 0))
             column_defs = [
                 {'headerName': 'year', 'field': 'Jahr', 'width': 50},  # Adjust the width as needed
@@ -284,6 +283,7 @@ class RheinFlow():
                 {'headerName': 'min', 'field': 'Minimum', 'width': 50},  # Adjust the width as needed
                 {'headerName': 'max', 'field': 'Maximum', 'width': 50},  # Adjust the width as needed
             ]
+            df['year'] = df['date'].astype(str)
             AgGrid(df_year,
                    col_defs=column_defs
             )
