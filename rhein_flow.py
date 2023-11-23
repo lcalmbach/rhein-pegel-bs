@@ -278,10 +278,10 @@ class RheinFlow():
             st.markdown('**Jahres-Statistik**')
             df_year = df_year.applymap(lambda x: round(x, 0))
             column_defs = [
-                {'headerName': 'Jahr', 'field': 'year', 'width': 50},  # Adjust the width as needed
-                {'headerName': 'Mittel', 'field': 'mean', 'width': 50},  # Adjust the width as needed
-                {'headerName': 'Minimum', 'field': '', 'min': 50},  # Adjust the width as needed
-                {'headerName': 'Maximum', 'field': 'max', 'width': 50},  # Adjust the width as needed
+                {'headerName': 'year', 'field': 'Jahr', 'width': 50},  # Adjust the width as needed
+                {'headerName': 'mean', 'field': 'Mittel', 'width': 50},  # Adjust the width as needed
+                {'headerName': 'min', 'field': 'Minimum', 'width': 50},  # Adjust the width as needed
+                {'headerName': 'max', 'field': 'Maximum', 'width': 50},  # Adjust the width as needed
             ]
             df['year'] = df['date'].astype(str)
             AgGrid(df_year,
