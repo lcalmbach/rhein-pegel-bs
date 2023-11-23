@@ -277,9 +277,16 @@ class RheinFlow():
         with col1:
             st.markdown('**Jahres-Statistik**')
             df['year'] = df['date'].astype(str)
-            df_year.columns = headers
             df_year = df_year.applymap(lambda x: round(x, 0))
-            AgGrid(df_year)
+            column_defs = [
+                {'headerName': 'year', 'field': 'Jahr', 'width': 50},  # Adjust the width as needed
+                {'headerName': 'mean', 'field': 'Mittel', 'width': 100},  # Adjust the width as needed
+                {'headerName': 'min', 'field': 'Minimum', 'width': 100},  # Adjust the width as needed
+                {'headerName': 'max', 'field': 'Maximum', 'width': 100},  # Adjust the width as needed
+            ]
+            AgGrid(df_year,
+                   col_defs=column_defs
+            )
             st.markdown('Jahres Tagesmittel der Abflussmenge [m³/s] sowie Tages-Minimum und -Maximum im Jahr seit 2020. Aktuelles Jahr mit Daten bis zum aktuellen Zeitpunkt.')
         with col2:
             st.markdown('**Monats-Statistik**')
